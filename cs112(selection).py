@@ -1,14 +1,14 @@
 import random
 
-
+# Function to determine if a pet gets sick or injured with a given probability
 def get_sick_or_injured(probability=0.10):
     return random.random() < probability
 
-
+# Function to simulate the death of a pet based on its age and a death probability
 def simulate_pet_death(lifespan, age, death_probability=0.05):
     return age >= lifespan - 1 and random.random() < death_probability
 
-
+# Function to adopt a pet and get its initial attributes
 def adopt_pet():
     pet_type = random.choice(["cat", "dog"])
     name = input(f"Enter a name for your {pet_type}: ")
@@ -18,7 +18,7 @@ def adopt_pet():
 
     return name, pet_type, age, lifespan
 
-
+# Function to get a newborn pet and specify its initial attributes
 def get_newborn_pet():
     pet_type = None
     while pet_type not in ["cat", "dog"]:
@@ -31,23 +31,23 @@ def get_newborn_pet():
 
     return name, pet_type, age, lifespan
 
-
+# Function to adjust hunger and happiness as a pet ages
 def age_health_changes(age, happiness, hunger):
     hunger = max(min(hunger - age, 100), 0)
     happiness = max(min(happiness - age, 100), 0)
     return hunger, happiness
 
-
+# Function to celebrate a pet's birthday
 def celebrate_birthday(name, age):
     print(f"Happy Birthday, {name}! {name} is now {age} years old.")
 
-
+# Function to simulate a walk with the pet and adjust its happiness
 def walk_pet(happiness):
     success_probability = 0.90
     happiness = max(min(happiness + 10 if random.random() < success_probability else happiness - 5, 100), 0)
     return happiness
 
-
+# Function to feed the pet with a risk of food poisoning
 def feed_pet_with_risk(name, hunger):
     food_poisoning_probability = 0.05
     if random.random() < food_poisoning_probability:
@@ -58,7 +58,7 @@ def feed_pet_with_risk(name, hunger):
         print(f"{name} is fed.")
         return False
 
-
+# Function to simulate overplaying with the pet with a risk of injury
 def overplay_with_pet(name, happiness):
     injury_probability = 0.20
     if random.random() < injury_probability:
@@ -69,23 +69,23 @@ def overplay_with_pet(name, happiness):
         print(f"{name} is happy!")
         return False
 
-
+# Function to check if the pet needs a vet visit
 def seek_vet_help(name):
     print(f"\n{name} seems to be showing unusual behavior or signs of sickness.")
     choice = input(f"Do you want to take {name} to the vet for a check-up? (yes/no): ")
     return choice.lower() == 'yes'
 
-
+# Function to determine the outcome of a vet visit
 def vet_visit_outcome():
     success_probability = 0.80  # Adjust the probability as needed
     return random.random() < success_probability
 
-
+# Function to ask the user if they want to take their pet to the vet
 def take_pet_to_vet(name):
     choice = input(f"Do you want to take {name} to the vet for a check-up? (yes/no): ")
     return choice.lower() == 'yes'
 
-
+# Main function to simulate the virtual pet game
 def main():
     print("Welcome to the Virtual Pet Simulator!")
     print("1. Adopt a Pet")

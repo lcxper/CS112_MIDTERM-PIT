@@ -46,6 +46,28 @@ def age_health_changes(age, happiness, hunger):
     return new_hunger, new_happiness
 
 
+# Function to feed the pet with a risk of food poisoning
+def feed_pet_with_risk(name, hunger, happiness):
+    food_poisoning_probability = 0.30
+    if random.random() < food_poisoning_probability:
+        print(f"Oh no! {name} got food poisoning.")
+        return True
+    else:
+        max(min(hunger, happiness - 15, 100), 0)
+        return False
+
+
+# Function to simulate overplaying with the pet with a risk of injury
+def overplay_with_pet(name, happiness):
+    injury_probability = 0.30
+    if random.random() < injury_probability:
+        print(f"\nOh no! {name} got injured while playing.")
+        return True
+    else:
+        max(min(happiness - 15, 100), 0)
+        return False
+
+
 # Function to celebrate a pet's birthday
 def celebrate_birthday(name, age):
     print(f"Happy Birthday, {name}! {name} is now {age} years old.")
@@ -61,7 +83,7 @@ def walk_pet(happiness):
 # Function to feed the pet
 def feed_pet(name, hunger, happiness):
     new_hunger = max(min(hunger + 15, 100), 0)
-    new_happiness = max(min(happiness + 10, 100), 0)  # Increase happiness after feeding
+    new_happiness = max(min(happiness + 5, 100), 0)  # Increase happiness after feeding
     print(f"{name} is fed.")
     return new_hunger, new_happiness
 
@@ -74,6 +96,19 @@ def play_with_pet(name, happiness, hunger):
     return new_happiness, new_hunger
 
 
+# Function to treat the pet during a vet visit when hunger or happiness is below 30
+def treat_pet(name, hunger, happiness):
+    print(f"\n{name} is receiving treatment at the vet.")
+
+    # Treat hunger and happiness
+    new_hunger = min(hunger + 10, 100)
+    new_happiness = min(happiness + 10, 100)
+
+    print(f"{name}'s condition has improved. Hunger: {new_hunger}, Happiness: {new_happiness}")
+
+    return new_hunger, new_happiness
+
+
 # Function to check if the pet needs a vet visit
 def seek_vet_help(name):
     print(f"\n{name} seems to be showing unusual behavior or signs of sickness.")
@@ -82,9 +117,9 @@ def seek_vet_help(name):
 
 
 # Function to determine the outcome of a vet visit
-def vet_visit_outcome():
+def vet_visit_outcome(hunger, happiness):
     success_probability = 0.70  # Adjust the probability as needed
-    return random.random() < success_probability
+    return random.random() < success_probability and (hunger < 30 or happiness < 30)
 
 
 # Function to ask the user if they want to take their pet to the vet
@@ -94,7 +129,6 @@ def take_pet_to_vet(name):
 
 
 # Main function to simulate the virtual pet game
-# noinspection PyTupleAssignmentBalance
 def main():
     print("Welcome to the Virtual Pet Simulator!")
     print("1. Adopt a Pet")
@@ -149,10 +183,8 @@ def main():
             choice = input(f"Do you want to take {name} to the vet for a check-up? (yes/no): ")
             if choice.lower() == 'yes':
                 if take_pet_to_vet(name):
-                    if vet_visit_outcome():
-                        print(f"{name} is at the vet. Get well soon, {name}!")
-                        hunger = 50
-                        happiness = 50
+                    if vet_visit_outcome(hunger, happiness):
+                        hunger, happiness = treat_pet(name, hunger, happiness)
                     else:
                         print(f"{name} is still not feeling well. Please monitor {name}'s condition.")
                 else:
@@ -165,41 +197,47 @@ def main():
             choice = input(f"Do you want to take {name} to the vet for a check-up? (yes/no): ")
             if choice.lower() == 'yes':
                 if take_pet_to_vet(name):
-                    if vet_visit_outcome():
-                        print(f"{name} is at the vet. Get well soon, {name}!")
-                        hunger = 50
+                    if vet_visit_outcome(hunger, happiness):
+                        hunger, happiness = treat_pet(name, hunger, happiness)
                     else:
                         print(f"{name} is still not feeling well. Please monitor {name}'s condition.")
                 else:
                     print(f"{name} remains sick due to overeating.")
 
-        if choice == "1":
+        elif choice == "1":
             hunger, happiness = feed_pet(name, hunger, happiness)
+            if feed_pet_with_risk(name, hunger):
+                print(f"Urgent! {name} needs to go to the vet for food poisoning.")
+                if take_pet_to_vet(name):
+                    if vet_visit_outcome(hunger, happiness):
+                        hunger, happiness = treat_pet(name, hunger, happiness)
+                    else:
+                        print(f"{name} is still not feeling well. Please monitor {name}'s condition.")
+                else:
+                    print(f"{name} might need to see a vet soon.")
 
         elif choice == "2":
             happiness, hunger = play_with_pet(name, happiness, hunger)
+            if overplay_with_pet(name, happiness):
+                print(f"Urgent! {name} needs to go to the vet for an injury.")
+                if take_pet_to_vet(name):
+                    if vet_visit_outcome(hunger, happiness):
+                        hunger, happiness = treat_pet(name, hunger, happiness)
+                    else:
+                        print(f"{name} is still not feeling well. Please monitor {name}'s condition.")
+                else:
+                    print(f"{name} might need to see a vet soon.")
 
         elif choice == "3":
             if get_sick_or_injured():
-                if age == 0:
-                    if take_pet_to_vet(name):
-                        if vet_visit_outcome():
-                            print(f"{name} is at the vet. Get well soon, {name}!")
-                            hunger = 50
-                        else:
-                            print(f"{name} is still not feeling well. Please monitor {name}'s condition.")
+                print(f"\nOh no! {name} is feeling sick or injured.")
+                if take_pet_to_vet(name):
+                    if vet_visit_outcome(hunger, happiness):
+                        hunger, happiness = treat_pet(name, hunger, happiness)
                     else:
-                        print(f"{name} is not feeling well. Consider visiting the vet soon.")
+                        print(f"{name} is still not feeling well. Please monitor {name}'s condition.")
                 else:
-                    print(f"\nOh no! {name} is feeling sick.")
-                    if take_pet_to_vet(name):
-                        if vet_visit_outcome():
-                            print(f"{name} is at the vet. Get well soon, {name}!")
-                            hunger = 50
-                        else:
-                            print(f"{name} is still not feeling well. Please monitor {name}'s condition.")
-                    else:
-                        print(f"{name} is not feeling well. Consider visiting the vet soon.")
+                    print(f"{name} is not feeling well. Consider visiting the vet soon.")
                 happiness = max(happiness - 10, 0)  # Decrease happiness after going to vet
             else:
                 print(f"{name} is healthy as a horse!")
@@ -207,6 +245,7 @@ def main():
         elif choice == "4":
             happiness = walk_pet(happiness)
             hunger = max(hunger - 5, 0)  # Decrease hunger after walking
+            print(f"{name} is happy!")
 
         activity_counter += 1
 
@@ -237,3 +276,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# End
